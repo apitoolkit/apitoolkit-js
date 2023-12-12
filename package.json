@@ -2,10 +2,12 @@
   "name": "apitoolkit",
   "version": "1.0.0",
   "description": "share code for all js web framework apitoolkit sdks",
-  "main": "index.js",
+  "main": "./lib",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "prepublishOnly": "npm run build",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/apitoolkit/apitoolkit-js.git"

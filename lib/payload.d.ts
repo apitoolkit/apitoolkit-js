@@ -1,0 +1,63 @@
+export declare type ATError = {
+    when: string;
+    error_type: string;
+    root_error_type?: string;
+    message: string;
+    root_error_message?: string;
+    stack_trace: string;
+};
+export declare type Payload = {
+    duration: number;
+    host: string;
+    method: string;
+    path_params: Record<string, any>;
+    project_id: string;
+    proto_major: number;
+    proto_minor: number;
+    query_params: Record<string, any>;
+    raw_url: string;
+    referer: string;
+    request_body: string;
+    request_headers: Record<string, any>;
+    response_body: string;
+    response_headers: Record<string, any>;
+    sdk_type: string;
+    status_code: number;
+    timestamp: string;
+    url_path: string;
+    errors: ATError[];
+    service_version?: string;
+    tags: string[];
+    msg_id?: string;
+    parent_id?: string;
+};
+interface PayloadBuilder {
+    start_time: bigint;
+    reqBody: string;
+    respBody: string;
+    requestHeaders: Record<string, any>;
+    responseHeaders: Record<string, any>;
+    reqQuery: Record<string, any>;
+    reqParams: Record<string, any>;
+    redactRequestBody: string[];
+    redactResponseBody: string[];
+    redactHeaderLists: string[];
+    project_id: string;
+    errors: ATError[];
+    service_version: string | undefined;
+    tags: string[];
+    msg_id: string;
+    parent_id: string | undefined;
+    host: string;
+    method: string;
+    status_code: number;
+    raw_url: string;
+    url_path: string;
+    sdk_type: "JsExpress" | "JsFastify" | "JsAdonis";
+}
+export declare function buildPayload({ start_time, requestHeaders, responseHeaders, reqParams, reqQuery, reqBody, respBody, redactHeaderLists, redactRequestBody, redactResponseBody, service_version, errors, msg_id, parent_id, tags, project_id, host, method, status_code, raw_url, url_path, sdk_type }: PayloadBuilder): Payload;
+export declare function redactHeaders(headers: Map<string, string[]>, headersToRedact: string[]): {
+    [key: string]: string[];
+};
+export declare function redactFields(body: string, fieldsToRedact: string[]): string;
+export {};
