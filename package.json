@@ -1,6 +1,6 @@
 {
   "name": "apitoolkit-js",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "share code for all js web framework apitoolkit sdks",
   "main": "./lib",
   "scripts": {
@@ -20,10 +20,10 @@
   },
   "homepage": "https://github.com/apitoolkit/apitoolkit-js#readme",
   "devDependencies": {
+    "@types/jsonpath": "^0.2.4",
     "@types/node": "^20.10.4"
   },
   "dependencies": {
-    "@types/jsonpath": "^0.2.4",
     "axios": "^1.6.2",
     "jsonpath": "^1.1.1"
   }
