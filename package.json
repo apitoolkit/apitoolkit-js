@@ -1,5 +1,5 @@
 {
-  "name": "apitoolkit",
+  "name": "apitoolkit-js",
   "version": "1.0.0",
   "description": "share code for all js web framework apitoolkit sdks",
   "main": "./lib",
