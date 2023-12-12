@@ -60,6 +60,7 @@ interface PayloadBuilder {
     status_code: number,
     raw_url: string,
     url_path: string,
+    sdk_type: "JsExpress" | "JsFastify" | "JsAdonis"
 }
 
 export function buildPayload({
@@ -67,7 +68,7 @@ export function buildPayload({
     reqParams, reqQuery, reqBody, respBody, redactHeaderLists,
     redactRequestBody, redactResponseBody, service_version, errors,
     msg_id, parent_id, tags, project_id, host, method, status_code,
-    raw_url, url_path
+    raw_url, url_path, sdk_type
 }: PayloadBuilder): Payload {
     const reqObjEntries: Array<[string, string[]]> = Object.entries(
         requestHeaders,
@@ -112,7 +113,7 @@ export function buildPayload({
             redactFields(respBody, redactResponseBody),
         ).toString("base64"),
         response_headers: redactHeaders(resHeaders, redactHeaderLists),
-        sdk_type: "JsExpress",
+        sdk_type: sdk_type,
         status_code: status_code,
         timestamp: new Date().toISOString(),
         url_path: url_path,
