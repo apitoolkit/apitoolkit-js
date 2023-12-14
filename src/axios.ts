@@ -44,8 +44,9 @@ export const onResponse =
             const req = response.config;
             const res = response;
 
-            const reqBody = JSON.stringify(req.data || {});
-            const respBody = JSON.stringify(res.data || {});
+            const reqBody = typeof req?.data === "string" ? req.data : JSON.stringify(req?.data || {});
+            const respBody = typeof req?.data === "string" ? res?.data as string : JSON.stringify(res?.data || {});
+
             const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
             const ATClient = asyncLocalStorage.getStore()!.get("AT_client");
             const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
