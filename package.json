@@ -1,6 +1,6 @@
 {
   "name": "apitoolkit-js",
-  "version": "2.0.2",
+  "version": "3.0.2",
   "description": "share code for all js web framework apitoolkit sdks",
   "main": "./lib",
   "scripts": {
