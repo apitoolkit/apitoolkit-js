@@ -1,4 +1,4 @@
-export declare type ATError = {
+export type ATError = {
     when: string;
     error_type: string;
     root_error_type?: string;
@@ -6,7 +6,7 @@ export declare type ATError = {
     root_error_message?: string;
     stack_trace: string;
 };
-export declare type Payload = {
+export type Payload = {
     duration: number;
     host: string;
     method: string;
@@ -55,7 +55,7 @@ interface PayloadBuilder {
     url_path: string;
     sdk_type: "JsExpress" | "JsFastify" | "JsAdonis";
 }
-export declare function buildPayload({ start_time, requestHeaders, responseHeaders, reqParams, reqQuery, reqBody, respBody, redactHeaderLists, redactRequestBody, redactResponseBody, service_version, errors, msg_id, parent_id, tags, project_id, host, method, status_code, raw_url, url_path, sdk_type }: PayloadBuilder): Payload;
+export declare function buildPayload({ start_time, requestHeaders, responseHeaders, reqParams, reqQuery, reqBody, respBody, redactHeaderLists, redactRequestBody, redactResponseBody, service_version, errors, msg_id, parent_id, tags, project_id, host, method, status_code, raw_url, url_path, sdk_type, }: PayloadBuilder): Payload;
 export declare function redactHeaders(headers: Map<string, string[]>, headersToRedact: string[]): {
     [key: string]: string[];
 };

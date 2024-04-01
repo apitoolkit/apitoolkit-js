@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { AsyncLocalStorage } from "async_hooks";
 import { Payload } from "./payload";
-export declare type Config = {
+export type Config = {
     apiKey: string;
     rootURL?: string;
     debug?: boolean;
@@ -12,7 +12,7 @@ export declare type Config = {
     serviceVersion?: string;
     tags?: string[];
 };
-declare type ClientMetadata = {
+type ClientMetadata = {
     project_id: string;
     pubsub_project_id: string;
     topic_id: string;
