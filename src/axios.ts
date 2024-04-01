@@ -211,9 +211,10 @@ export function buildPayload(
     return [k, v];
   });
   const queryParams = Object.fromEntries(queryObjEntries);
+  const host = getHostFromUrl(req.baseURL || req.url || "");
   const payload: Payload = {
     duration: Number(process.hrtime.bigint() - start_time),
-    host: req.baseURL ?? "", // AxiosRequestConfig does not have a hostname property, using baseURL as a substitute
+    host: host,
     method: req.method?.toUpperCase() ?? "",
     path_params: {}, // Axios does not have a direct equivalent to Express' path parameters
     project_id: project_id,
@@ -255,5 +256,13 @@ function getPathAndQueryParamsFromURL(url: string) {
     return { path, queryParams, rawUrl: path + queryParamsString };
   } catch (error) {
     return { path: "", queryParams: {}, rawUrl: "" };
+  }
+}
+function getHostFromUrl(url: string) {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.host;
+  } catch (error) {
+    return "";
   }
 }
