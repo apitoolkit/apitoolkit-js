@@ -31,11 +31,12 @@ export const onResponse =
     urlWildcard: string | undefined,
     redactHeaderLists: string[],
     redactRequestBody: string[],
-    redactResponseBody: string[]
+    redactResponseBody: string[],
+    notWebContext: boolean
   ) =>
   (response: AxiosResponse): AxiosResponse => {
     try {
-      if (asyncLocalStorage.getStore() == null) {
+      if (asyncLocalStorage.getStore() == null && !notWebContext) {
         console.log(
           "APIToolkit: observeAxios used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.observeAxios instead, if you're not in a web context."
         );
@@ -89,11 +90,12 @@ export const onResponseError =
     urlWildcard: string | undefined,
     redactHeaderLists: string[],
     redactRequestBody: string[],
-    redactResponseBody: string[]
+    redactResponseBody: string[],
+    notWebContext: boolean
   ) =>
   (error: AxiosError): Promise<AxiosError> => {
     try {
-      if (asyncLocalStorage.getStore() == null) {
+      if (asyncLocalStorage.getStore() == null && !notWebContext) {
         console.log(
           "APIToolkit: observeAxios used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.observeAxios instead, if you're not in a web context."
         );
@@ -150,7 +152,8 @@ export function observeAxios(
   urlWildcard: string | undefined = undefined,
   redactHeaders: string[] = [],
   redactRequestBody: string[] = [],
-  redactResponseBody: string[] = []
+  redactResponseBody: string[] = [],
+  notWebContext: boolean | undefined = false
 ): AxiosInstance {
   axiosInstance.interceptors.request.use(onRequest, onRequestError);
   axiosInstance.interceptors.response.use(
@@ -158,13 +161,15 @@ export function observeAxios(
       urlWildcard,
       redactHeaders,
       redactRequestBody,
-      redactResponseBody
+      redactResponseBody,
+      !!notWebContext
     ),
     onResponseError(
       urlWildcard,
       redactHeaders,
       redactRequestBody,
-      redactResponseBody
+      redactResponseBody,
+      !!notWebContext
     )
   );
   return axiosInstance;
