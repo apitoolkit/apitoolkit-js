@@ -32,7 +32,8 @@ export const onResponse =
     redactHeaderLists: string[],
     redactRequestBody: string[],
     redactResponseBody: string[],
-    notWebContext: boolean
+    notWebContext: boolean,
+    client: any
   ) =>
   (response: AxiosResponse): AxiosResponse => {
     try {
@@ -54,31 +55,60 @@ export const onResponse =
           ? res?.data
           : JSON.stringify(res?.data || {});
 
-      const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
-      const ATClient = asyncLocalStorage.getStore()!.get("AT_client");
-      const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
-      const parent_id: string = asyncLocalStorage.getStore()!.get("AT_msg_id");
+      if (notWebContext && client) {
+        const config = client.getConfig();
+        const project_id = config.project_id;
+        const ATConfig: Config = config.config;
+        const parent_id: any = undefined;
 
-      const errors: ATError[] = [];
+        const errors: ATError[] = [];
 
-      const payload = buildPayload(
-        response.config.meta.startTime,
-        req,
-        res,
-        reqBody,
-        respBody,
-        redactRequestBody,
-        redactResponseBody,
-        redactHeaderLists,
-        project_id,
-        ATConfig.serviceVersion,
-        errors,
-        ATConfig.tags ?? [],
-        parent_id,
-        urlWildcard
-      );
+        const payload = buildPayload(
+          response.config.meta.startTime,
+          req,
+          res,
+          reqBody,
+          respBody,
+          redactRequestBody,
+          redactResponseBody,
+          redactHeaderLists,
+          project_id,
+          ATConfig.serviceVersion,
+          errors,
+          ATConfig.tags ?? [],
+          parent_id,
+          urlWildcard
+        );
+        client.publishMessage(payload);
+      } else {
+        const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
+        const ATClient = asyncLocalStorage.getStore()!.get("AT_client");
+        const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
+        const parent_id: string = asyncLocalStorage
+          .getStore()!
+          .get("AT_msg_id");
 
-      ATClient.publishMessage(payload);
+        const errors: ATError[] = [];
+
+        const payload = buildPayload(
+          response.config.meta.startTime,
+          req,
+          res,
+          reqBody,
+          respBody,
+          redactRequestBody,
+          redactResponseBody,
+          redactHeaderLists,
+          project_id,
+          ATConfig.serviceVersion,
+          errors,
+          ATConfig.tags ?? [],
+          parent_id,
+          urlWildcard
+        );
+
+        ATClient.publishMessage(payload);
+      }
       return response;
     } catch (_error) {
       return response;
@@ -91,7 +121,8 @@ export const onResponseError =
     redactHeaderLists: string[],
     redactRequestBody: string[],
     redactResponseBody: string[],
-    notWebContext: boolean
+    notWebContext: boolean,
+    client: any
   ) =>
   (error: AxiosError): Promise<AxiosError> => {
     try {
@@ -113,33 +144,61 @@ export const onResponseError =
         typeof res?.data === "string"
           ? res?.data
           : JSON.stringify(res?.data || {});
-      const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
-      const ATClient: APIToolkit = asyncLocalStorage
-        .getStore()!
-        .get("AT_client");
-      const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
-      const parent_id: string = asyncLocalStorage.getStore()!.get("AT_msg_id");
 
-      const errors: ATError[] = [];
+      if (notWebContext && client) {
+        const config = client.getConfig();
+        const project_id = config.project_id;
+        const ATConfig: Config = config.config;
+        const parent_id: any = undefined;
 
-      const payload = buildPayload(
-        error.config?.meta.startTime ?? process.hrtime.bigint(),
-        error.request,
-        res,
-        reqBody,
-        respBody,
-        redactRequestBody,
-        redactResponseBody,
-        redactHeaderLists,
-        project_id,
-        ATConfig.serviceVersion,
-        errors,
-        ATConfig.tags ?? [],
-        parent_id,
-        urlWildcard
-      );
+        const errors: ATError[] = [];
 
-      ATClient.publishMessage(payload);
+        const payload = buildPayload(
+          error.config?.meta.startTime ?? process.hrtime.bigint(),
+          error.request,
+          res,
+          reqBody,
+          respBody,
+          redactRequestBody,
+          redactResponseBody,
+          redactHeaderLists,
+          project_id,
+          ATConfig.serviceVersion,
+          errors,
+          ATConfig.tags ?? [],
+          parent_id,
+          urlWildcard
+        );
+        client.publishMessage(payload);
+      } else {
+        const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
+        const ATClient = asyncLocalStorage.getStore()!.get("AT_client");
+        const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
+        const parent_id: string = asyncLocalStorage
+          .getStore()!
+          .get("AT_msg_id");
+
+        const errors: ATError[] = [];
+
+        const payload = buildPayload(
+          error.config?.meta.startTime ?? process.hrtime.bigint(),
+          error.request,
+          res,
+          reqBody,
+          respBody,
+          redactRequestBody,
+          redactResponseBody,
+          redactHeaderLists,
+          project_id,
+          ATConfig.serviceVersion,
+          errors,
+          ATConfig.tags ?? [],
+          parent_id,
+          urlWildcard
+        );
+
+        ATClient.publishMessage(payload);
+      }
 
       return Promise.reject(error);
     } catch (_error) {
@@ -153,7 +212,8 @@ export function observeAxios(
   redactHeaders: string[] = [],
   redactRequestBody: string[] = [],
   redactResponseBody: string[] = [],
-  notWebContext: boolean | undefined = false
+  notWebContext: boolean | undefined = false,
+  client: any = undefined
 ): AxiosInstance {
   axiosInstance.interceptors.request.use(onRequest, onRequestError);
   axiosInstance.interceptors.response.use(
@@ -162,14 +222,16 @@ export function observeAxios(
       redactHeaders,
       redactRequestBody,
       redactResponseBody,
-      !!notWebContext
+      !!notWebContext,
+      client
     ),
     onResponseError(
       urlWildcard,
       redactHeaders,
       redactRequestBody,
       redactResponseBody,
-      !!notWebContext
+      !!notWebContext,
+      client
     )
   );
   return axiosInstance;
