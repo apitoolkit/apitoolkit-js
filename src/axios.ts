@@ -239,6 +239,35 @@ export function observeAxios(
   return newAxios;
 }
 
+export function observeAxiosGlobal(
+  axiosInstance: AxiosInstance,
+  urlWildcard: string | undefined = undefined,
+  redactHeaders: string[] = [],
+  redactRequestBody: string[] = [],
+  redactResponseBody: string[] = [],
+  notWebContext: boolean | undefined = false,
+  client: any = undefined
+) {
+  axiosInstance.interceptors.request.use(onRequest, onRequestError);
+  axiosInstance.interceptors.response.use(
+    onResponse(
+      urlWildcard,
+      redactHeaders,
+      redactRequestBody,
+      redactResponseBody,
+      !!notWebContext,
+      client
+    ),
+    onResponseError(
+      urlWildcard,
+      redactHeaders,
+      redactRequestBody,
+      redactResponseBody,
+      !!notWebContext,
+      client
+    )
+  );
+}
 export function buildPayload(
   start_time: bigint,
   req: AxiosRequestConfig,
