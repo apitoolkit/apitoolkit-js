@@ -3,6 +3,7 @@ import {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  AxiosStatic,
   InternalAxiosRequestConfig,
 } from "axios";
 
@@ -207,7 +208,7 @@ export const onResponseError =
   };
 
 export function observeAxios(
-  axiosInstance: AxiosInstance,
+  axiosInstance: AxiosStatic,
   urlWildcard: string | undefined = undefined,
   redactHeaders: string[] = [],
   redactRequestBody: string[] = [],
@@ -215,8 +216,9 @@ export function observeAxios(
   notWebContext: boolean | undefined = false,
   client: any = undefined
 ): AxiosInstance {
-  axiosInstance.interceptors.request.use(onRequest, onRequestError);
-  axiosInstance.interceptors.response.use(
+  const newAxios = axiosInstance.create();
+  newAxios.interceptors.request.use(onRequest, onRequestError);
+  newAxios.interceptors.response.use(
     onResponse(
       urlWildcard,
       redactHeaders,
@@ -234,7 +236,7 @@ export function observeAxios(
       client
     )
   );
-  return axiosInstance;
+  return newAxios;
 }
 
 export function buildPayload(
