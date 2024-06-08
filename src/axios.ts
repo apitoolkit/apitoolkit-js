@@ -7,7 +7,7 @@ import {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { APIToolkit, asyncLocalStorage, Config } from "./apitoolkit";
+import { asyncLocalStorage, Config } from "./apitoolkit";
 import { ATError, Payload, redactFields, redactHeaders } from "./payload";
 
 declare module "axios" {
@@ -27,6 +27,99 @@ export const onRequestError = (error: AxiosError): Promise<AxiosError> => {
   return Promise.reject(error);
 };
 
+function processResponse(
+  response: AxiosResponse | AxiosError,
+  urlWildcard: string | undefined,
+  redactHeaderLists: string[],
+  redactRequestBody: string[],
+  redactResponseBody: string[],
+  notWebContext: boolean,
+  isGlobal: boolean,
+  client: any
+) {
+  let req: any = response.config;
+  let res: AxiosResponse | undefined;
+  if (response instanceof Error) {
+    res = response.response;
+    req = response.request;
+  } else {
+    res = response;
+  }
+
+  const reqBody =
+    typeof req?.data === "string" ? req.data : JSON.stringify(req?.data || {});
+  const respBody =
+    typeof res?.data === "string" ? res?.data : JSON.stringify(res?.data || {});
+
+  if (notWebContext && client) {
+    const config = client.getConfig();
+    const project_id = config.project_id;
+    const ATConfig: Config = config.config;
+    const parent_id: any = undefined;
+
+    const errors: ATError[] = [];
+
+    const payload = buildPayload(
+      req?.meta.startTime,
+      req,
+      res,
+      reqBody,
+      respBody,
+      redactRequestBody,
+      redactResponseBody,
+      redactHeaderLists,
+      project_id,
+      ATConfig.serviceVersion,
+      errors,
+      ATConfig.tags ?? [],
+      parent_id,
+      urlWildcard
+    );
+    client.publishMessage(payload);
+  } else {
+    let config;
+    let ATClient;
+    let project_id;
+    let ATConfig;
+    let parent_id;
+    const store = asyncLocalStorage.getStore();
+
+    if (isGlobal) {
+      config = client.getConfig();
+      ATClient = client;
+      project_id = config.project_id;
+      ATConfig = config.config;
+      parent_id = store?.get("AT_msg_id");
+    } else {
+      project_id = store!.get("AT_project_id");
+      ATClient = store!.get("AT_client");
+      ATConfig = store!.get("AT_config");
+      parent_id = store!.get("AT_msg_id");
+    }
+
+    const errors: ATError[] = [];
+
+    const payload = buildPayload(
+      req?.meta.startTime,
+      req,
+      res,
+      reqBody,
+      respBody,
+      redactRequestBody,
+      redactResponseBody,
+      redactHeaderLists,
+      project_id,
+      ATConfig.serviceVersion,
+      errors,
+      ATConfig.tags ?? [],
+      parent_id,
+      urlWildcard
+    );
+
+    ATClient.publishMessage(payload);
+  }
+}
+
 export const onResponse =
   (
     urlWildcard: string | undefined,
@@ -34,6 +127,7 @@ export const onResponse =
     redactRequestBody: string[],
     redactResponseBody: string[],
     notWebContext: boolean,
+    isGlobal: boolean,
     client: any
   ) =>
   (response: AxiosResponse): AxiosResponse => {
@@ -44,72 +138,16 @@ export const onResponse =
         );
         return response;
       }
-      const req = response.config;
-      const res = response;
-
-      const reqBody =
-        typeof req?.data === "string"
-          ? req.data
-          : JSON.stringify(req?.data || {});
-      const respBody =
-        typeof res?.data === "string"
-          ? res?.data
-          : JSON.stringify(res?.data || {});
-
-      if (notWebContext && client) {
-        const config = client.getConfig();
-        const project_id = config.project_id;
-        const ATConfig: Config = config.config;
-        const parent_id: any = undefined;
-
-        const errors: ATError[] = [];
-
-        const payload = buildPayload(
-          response.config.meta.startTime,
-          req,
-          res,
-          reqBody,
-          respBody,
-          redactRequestBody,
-          redactResponseBody,
-          redactHeaderLists,
-          project_id,
-          ATConfig.serviceVersion,
-          errors,
-          ATConfig.tags ?? [],
-          parent_id,
-          urlWildcard
-        );
-        client.publishMessage(payload);
-      } else {
-        const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
-        const ATClient = asyncLocalStorage.getStore()!.get("AT_client");
-        const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
-        const parent_id: string = asyncLocalStorage
-          .getStore()!
-          .get("AT_msg_id");
-
-        const errors: ATError[] = [];
-
-        const payload = buildPayload(
-          response.config.meta.startTime,
-          req,
-          res,
-          reqBody,
-          respBody,
-          redactRequestBody,
-          redactResponseBody,
-          redactHeaderLists,
-          project_id,
-          ATConfig.serviceVersion,
-          errors,
-          ATConfig.tags ?? [],
-          parent_id,
-          urlWildcard
-        );
-
-        ATClient.publishMessage(payload);
-      }
+      processResponse(
+        response,
+        urlWildcard,
+        redactHeaderLists,
+        redactRequestBody,
+        redactResponseBody,
+        notWebContext,
+        isGlobal,
+        client
+      );
       return response;
     } catch (_error) {
       return response;
@@ -123,84 +161,27 @@ export const onResponseError =
     redactRequestBody: string[],
     redactResponseBody: string[],
     notWebContext: boolean,
+    isGlobal: boolean,
     client: any
   ) =>
   (error: AxiosError): Promise<AxiosError> => {
     try {
-      if (asyncLocalStorage.getStore() == null && !notWebContext) {
+      if (asyncLocalStorage.getStore() == null && !notWebContext && !isGlobal) {
         console.log(
           "APIToolkit: observeAxios used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.observeAxios instead, if you're not in a web context."
         );
         return Promise.reject(error);
       }
-
-      const req = error.config;
-      const res = error.response;
-
-      const reqBody =
-        typeof req?.data === "string"
-          ? req.data
-          : JSON.stringify(req?.data || {});
-      const respBody =
-        typeof res?.data === "string"
-          ? res?.data
-          : JSON.stringify(res?.data || {});
-
-      if (notWebContext && client) {
-        const config = client.getConfig();
-        const project_id = config.project_id;
-        const ATConfig: Config = config.config;
-        const parent_id: any = undefined;
-
-        const errors: ATError[] = [];
-
-        const payload = buildPayload(
-          error.config?.meta.startTime ?? process.hrtime.bigint(),
-          error.request,
-          res,
-          reqBody,
-          respBody,
-          redactRequestBody,
-          redactResponseBody,
-          redactHeaderLists,
-          project_id,
-          ATConfig.serviceVersion,
-          errors,
-          ATConfig.tags ?? [],
-          parent_id,
-          urlWildcard
-        );
-        client.publishMessage(payload);
-      } else {
-        const project_id = asyncLocalStorage.getStore()!.get("AT_project_id");
-        const ATClient = asyncLocalStorage.getStore()!.get("AT_client");
-        const ATConfig: Config = asyncLocalStorage.getStore()!.get("AT_config");
-        const parent_id: string = asyncLocalStorage
-          .getStore()!
-          .get("AT_msg_id");
-
-        const errors: ATError[] = [];
-
-        const payload = buildPayload(
-          error.config?.meta.startTime ?? process.hrtime.bigint(),
-          error.request,
-          res,
-          reqBody,
-          respBody,
-          redactRequestBody,
-          redactResponseBody,
-          redactHeaderLists,
-          project_id,
-          ATConfig.serviceVersion,
-          errors,
-          ATConfig.tags ?? [],
-          parent_id,
-          urlWildcard
-        );
-
-        ATClient.publishMessage(payload);
-      }
-
+      processResponse(
+        error,
+        urlWildcard,
+        redactHeaderLists,
+        redactRequestBody,
+        redactResponseBody,
+        notWebContext,
+        isGlobal,
+        client
+      );
       return Promise.reject(error);
     } catch (_error) {
       return Promise.reject(error);
@@ -225,6 +206,7 @@ export function observeAxios(
       redactRequestBody,
       redactResponseBody,
       !!notWebContext,
+      false,
       client
     ),
     onResponseError(
@@ -233,6 +215,7 @@ export function observeAxios(
       redactRequestBody,
       redactResponseBody,
       !!notWebContext,
+      false,
       client
     )
   );
@@ -245,7 +228,6 @@ export function observeAxiosGlobal(
   redactHeaders: string[] = [],
   redactRequestBody: string[] = [],
   redactResponseBody: string[] = [],
-  notWebContext: boolean | undefined = false,
   client: any = undefined
 ) {
   axiosInstance.interceptors.request.use(onRequest, onRequestError);
@@ -255,7 +237,8 @@ export function observeAxiosGlobal(
       redactHeaders,
       redactRequestBody,
       redactResponseBody,
-      !!notWebContext,
+      false,
+      true,
       client
     ),
     onResponseError(
@@ -263,7 +246,8 @@ export function observeAxiosGlobal(
       redactHeaders,
       redactRequestBody,
       redactResponseBody,
-      !!notWebContext,
+      false,
+      true,
       client
     )
   );
