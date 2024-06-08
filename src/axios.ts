@@ -60,7 +60,7 @@ function processResponse(
     const errors: ATError[] = [];
 
     const payload = buildPayload(
-      req?.meta.startTime,
+      response.config?.meta.startTime,
       req,
       res,
       reqBody,
@@ -100,7 +100,7 @@ function processResponse(
     const errors: ATError[] = [];
 
     const payload = buildPayload(
-      req?.meta.startTime,
+      response.config?.meta.startTime,
       req,
       res,
       reqBody,
@@ -132,7 +132,7 @@ export const onResponse =
   ) =>
   (response: AxiosResponse): AxiosResponse => {
     try {
-      if (asyncLocalStorage.getStore() == null && !notWebContext) {
+      if (asyncLocalStorage.getStore() == null && !notWebContext && !isGlobal) {
         console.log(
           "APIToolkit: observeAxios used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.observeAxios instead, if you're not in a web context."
         );
