@@ -8,7 +8,7 @@
 [![APItoolkit SDK](https://img.shields.io/badge/APItoolkit-SDK-0068ff?logo=javascript)](https://github.com/topics/apitoolkit-sdk) [![](https://img.shields.io/npm/v/apitoolkit-js.svg?logo=npm)](https://npmjs.com/package/apitoolkit-js) [![](https://img.shields.io/npm/dw/apitoolkit-js
 )](https://npmjs.com/package/apitoolkit-js) [![Join Discord Server](https://img.shields.io/badge/Chat-Discord-7289da)](https://discord.gg/dEB6EjQnKB) [![APItoolkit Docs](https://img.shields.io/badge/Read-Docs-0068ff)](https://apitoolkit.io/docs/sdks/nodejs?utm_source=github-sdks) 
 
-APItoolkit is an end-to-end API and web services management toolkit for engineers and customer support teams. To integrate your Javascript application with APItoolkit, you can use any of the [existing NodeJS framework SDKs](https://apitoolkit.io/docs/sdks/nodejs?utm_source=github-sdks) or directly use this `apitoolkit-js` package (the shared code for all the JS SDKs) to monitor incoming traffic, aggregate the requests, and then deliver them to the APItoolkit's servers.
+APItoolkit is an end-to-end API and web services management toolkit for engineers and customer support teams. To integrate your Javascript application with APItoolkit, you can use any of the [existing NodeJS framework SDKs](https://apitoolkit.io/docs/sdks/nodejs?utm_source=github-sdks) or directly use this `apitoolkit-js` package (the shared code for all the Javascript SDKs) to monitor incoming traffic, aggregate the requests, and then deliver them to the APItoolkit's servers.
 
 </div>
 
