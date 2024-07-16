@@ -1,11 +1,15 @@
 {
   "name": "apitoolkit-js",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "share code for all js web framework apitoolkit sdks",
   "main": "./lib",
   "scripts": {
     "build": "npx tsc",
-    "test": "jest --config jestconfig.json"
+    "test": "jest --config jestconfig.json",
+    "version": "git add -A src",
+    "updates": "npx npm-check-updates",
+    "updates:minor": "npx npm-check-updates --target minor"
+
   },
   "prepublishOnly": "npm run build",
   "repository": {
