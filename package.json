@@ -1,6 +1,6 @@
 {
   "name": "apitoolkit-js",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "share code for all js web framework apitoolkit sdks",
   "main": "./lib",
   "scripts": {
@@ -9,7 +9,6 @@
     "version": "git add -A src",
     "updates": "npx npm-check-updates",
     "updates:minor": "npx npm-check-updates --target minor"
-
   },
   "prepublishOnly": "npm run build",
   "repository": {
