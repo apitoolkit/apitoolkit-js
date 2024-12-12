@@ -1,0 +1,22 @@
+{
+  "name": "@apitoolkit/fastify",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@apitoolkit/common": "workspace:*",
+    "@opentelemetry/api": "^1.9.0",
+    "axios": "^1.7.9",
+    "fastify": "^5.1.0",
+    "uuid": "^11.0.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

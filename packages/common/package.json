@@ -1,0 +1,24 @@
+{
+  "name": "@apitoolkit/common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "axios": "^1.7.9",
+    "jsonpath": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/jsonpath": "^0.2.4",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.0.0"
+  },
+  "license": "ISC"
+}
