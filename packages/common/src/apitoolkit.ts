@@ -28,7 +28,7 @@ export function setAttributes(
   reqBody: string,
   respBody: string,
   config: Config,
-  sdkType: `JsExpress` | `JsFastify` | `JsAdonis`,
+  sdkType: `JsExpress` | `JsFastify` | `JsAdonis` | "JsAxiosOutgoing",
   parentId: string | undefined
 ) {
   try {
