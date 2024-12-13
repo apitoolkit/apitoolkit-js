@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc"
+    "build": "pnpm exec tsc --build"
   },
   "workspaces": [
     "packages/*"
   ],
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
 }
