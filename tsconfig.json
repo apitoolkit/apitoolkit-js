@@ -3,8 +3,6 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
     "module": "CommonJS",
     "target": "ESNext",

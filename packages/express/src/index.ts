@@ -12,12 +12,14 @@ import { Application, NextFunction, Request, Response } from "express";
 export { ReportError as reportError, observeAxios } from "@apitoolkit/common";
 
 export class APIToolkit {
-  #config: Config;
+  #config: Config = {};
   constructor(config: Config) {
     this.#config = config;
     if (this.#config.monitorAxios) {
       observeAxiosGlobal(this.#config.monitorAxios, this.#config);
     }
+    this.middleware = this.middleware.bind(this);
+    this.errorMiddleware = this.errorMiddleware.bind(this);
   }
 
   static NewClient(config: Config) {
@@ -41,8 +43,7 @@ export class APIToolkit {
         .startSpan("apitoolkit-http-span");
 
       if (store) {
-        store.set("apitoolkit-span", span);
-        store.set("apitoolkit-msg-id", msg_id);
+        store.set("AT_msg_id", msg_id);
         store.set("AT_errors", []);
       }
       if (this.#config.debug) {
