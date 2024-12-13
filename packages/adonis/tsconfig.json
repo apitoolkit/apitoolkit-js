@@ -1,0 +1,16 @@
+{
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./dist",
+    "experimentalDecorators": true,
+    "types": ["@adonisjs/core"],
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  },
+  "references": [{ "path": "../common" }],
+  "extends": "../../tsconfig.json",
+}

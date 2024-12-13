@@ -11,7 +11,8 @@
   "references": [
     { "path": "./packages/common" },
     { "path": "./packages/express" },
-    {"path": "./packages/fastify"}
+    {"path": "./packages/fastify"},
+    {"path": "./packages/adonis"}
   ],
   "exclude": [
     "node_modules",

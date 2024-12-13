@@ -1,0 +1,9 @@
+{{{
+  exports({ to: app.configPath('apitoolkit.ts') })
+}}}
+
+import { defineConfig } from 'apitoolkit-adonis'
+
+export default defineConfig({
+    debug: false,
+})
