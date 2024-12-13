@@ -23,7 +23,6 @@ export OTEL_RESOURCE_ATTRIBUTES=at-project-key="<YOUR_API_KEY>" # Adds your API 
 export OTEL_EXPORTER_OTLP_PROTOCOL="grpc" #Specifies the protocol to use for the OpenTelemetry exporter.
 export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 
-
 node server.js # starting your express server
 ```
 

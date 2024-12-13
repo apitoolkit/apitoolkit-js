@@ -11,7 +11,7 @@ import {
 } from "@apitoolkit/common";
 import { trace } from "@opentelemetry/api";
 
-export { ReportError, observeAxios } from "@apitoolkit/common";
+export { ReportError as reportError, observeAxios } from "@apitoolkit/common";
 
 class APIToolkit {
   #config: Config & { fastify: FastifyInstance };
@@ -78,7 +78,7 @@ class APIToolkit {
 
   public initializeHooks() {
     if (this.#config.monitorAxios) {
-      observeAxiosGlobal(this.#config.monitorAxios, {});
+      observeAxiosGlobal(this.#config.monitorAxios, this.#config);
     }
     this.#config.fastify.addHook("preHandler", (request, _reply, done) => {
       if (this.#config.debug) {
@@ -90,14 +90,7 @@ class APIToolkit {
           const span = trace
             .getTracer(this.#config.serviceName || "")
             .startSpan("apitoolkit-http-span");
-
-          asyncLocalStorage.getStore()!.set("AT_client", this);
           asyncLocalStorage.getStore()!.set("AT_span", span);
-          asyncLocalStorage.getStore()!.set("AT_config", {
-            tags: this.#config.tags,
-            serviceVersion: this.#config.serviceVersion,
-          });
-
           asyncLocalStorage.getStore()!.set("AT_errors", []);
           const msg_id: string = uuidv4();
           asyncLocalStorage.getStore()!.set("AT_msg_id", msg_id);
