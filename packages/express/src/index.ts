@@ -3,22 +3,41 @@ import {
   ReportError,
   setAttributes,
   Config,
+  observeAxiosGlobal,
 } from "@apitoolkit/common";
 
 import { v4 as uuidv4 } from "uuid";
 import { trace } from "@opentelemetry/api";
 import { Application, NextFunction, Request, Response } from "express";
+export { ReportError as reportError, observeAxios } from "@apitoolkit/common";
 
-function middleware(config?: Config) {
-  if (!config) {
-    config = {};
+export class APIToolkit {
+  #config: Config;
+  constructor(config: Config) {
+    this.#config = config;
+    if (this.#config.monitorAxios) {
+      observeAxiosGlobal(this.#config.monitorAxios, this.#config);
+    }
   }
-  return function (req: Request, res: Response, next: NextFunction) {
+
+  static NewClient(config: Config) {
+    return new APIToolkit(config);
+  }
+  public errorMiddleware(
+    err: Error,
+    _req: Request,
+    _res: Response,
+    next: NextFunction
+  ) {
+    ReportError(err);
+    next(err);
+  }
+  public middleware(req: Request, res: Response, next: NextFunction) {
     asyncLocalStorage.run(new Map(), () => {
       const store = asyncLocalStorage.getStore();
       const msg_id = uuidv4();
       const span = trace
-        .getTracer(config.serviceName || "")
+        .getTracer(this.#config.serviceName || "")
         .startSpan("apitoolkit-http-span");
 
       if (store) {
@@ -26,14 +45,14 @@ function middleware(config?: Config) {
         store.set("apitoolkit-msg-id", msg_id);
         store.set("AT_errors", []);
       }
-      if (config.debug) {
+      if (this.#config.debug) {
         console.log("APIToolkit: expressMiddleware called");
       }
 
       let respBody: any = "";
       const oldSend = res.send;
       res.send = (val) => {
-        if (config.captureResponseBody) {
+        if (this.#config.captureResponseBody) {
           respBody = val;
         }
         return oldSend.apply(res, [val]);
@@ -46,7 +65,7 @@ function middleware(config?: Config) {
         try {
           const reqBody = getRequestBody(
             req,
-            config.captureRequestBody || false
+            this.#config.captureRequestBody || false
           );
           const url_path = getUrlPath(req);
           setAttributes(
@@ -63,12 +82,12 @@ function middleware(config?: Config) {
             url_path,
             reqBody,
             respBody,
-            config,
+            this.#config,
             "JsExpress",
             undefined
           );
         } catch (error) {
-          if (config.debug) {
+          if (this.#config.debug) {
             console.log(error);
           }
         } finally {
@@ -79,19 +98,7 @@ function middleware(config?: Config) {
       res.on("finish", onRespFinishedCB).on("error", onRespFinishedCB);
       next();
     });
-  };
-}
-
-function errorMiddleware() {
-  return function (
-    err: Error,
-    _req: Request,
-    _res: Response,
-    next: NextFunction
-  ) {
-    ReportError(err);
-    next(err);
-  };
+  }
 }
 
 function getRequestBody(req: Request, captureRequestBody: boolean): string {
@@ -175,8 +182,6 @@ const findMatchedRoute = (
   }
 };
 
-const reportError = ReportError;
-
 function transformPath(params: Record<string, string>, path: string): string {
   let transformedPath = path;
   for (const [key, value] of Object.entries(params)) {
@@ -185,10 +190,3 @@ function transformPath(params: Record<string, string>, path: string): string {
   }
   return transformedPath;
 }
-
-export const APIToolkit = {
-  middleware,
-  errorMiddleware,
-  reportError,
-};
-export default APIToolkit;

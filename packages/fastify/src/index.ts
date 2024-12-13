@@ -3,10 +3,15 @@ import { FastifyInstance } from "fastify";
 import {
   asyncLocalStorage,
   Config,
+  observeAxios,
+  observeAxiosGlobal,
   ReportError,
   setAttributes,
+  AxiosConfig,
 } from "@apitoolkit/common";
 import { trace } from "@opentelemetry/api";
+
+export { ReportError, observeAxios } from "@apitoolkit/common";
 
 class APIToolkit {
   #config: Config & { fastify: FastifyInstance };
@@ -20,6 +25,8 @@ class APIToolkit {
     redactRequestBody = [],
     redactResponseBody = [],
     serviceVersion = undefined,
+    captureRequestBody = false,
+    captureResponseBody = false,
     serviceName = "",
     debug = false,
     tags = [],
@@ -30,6 +37,8 @@ class APIToolkit {
       redactHeaders,
       redactRequestBody,
       redactResponseBody,
+      captureRequestBody,
+      captureResponseBody,
       serviceName,
       serviceVersion,
       tags,
@@ -63,17 +72,14 @@ class APIToolkit {
     ReportError(err);
   }
 
+  public observeAxios(config: AxiosConfig) {
+    return observeAxios(config);
+  }
+
   public initializeHooks() {
-    // if (this.#axios) {
-    //   observeAxiosGlobal(
-    //     this.#axios,
-    //     undefined,
-    //     this.#redactHeaders,
-    //     this.#redactRequestBody,
-    //     this.#redactResponseBody,
-    //     this
-    //   );
-    // }
+    if (this.#config.monitorAxios) {
+      observeAxiosGlobal(this.#config.monitorAxios, {});
+    }
     this.#config.fastify.addHook("preHandler", (request, _reply, done) => {
       if (this.#config.debug) {
         console.log("apitoolkit: preHandler hook called");
@@ -114,8 +120,12 @@ class APIToolkit {
         console.log("apitoolkit:  onSend hook called");
       }
       try {
-        const reqBody = this.getStringValue(request.body);
-        const resBody = this.getStringValue(data);
+        const reqBody = this.#config.captureRequestBody
+          ? this.getStringValue(request.body)
+          : "";
+        const resBody = this.#config.captureResponseBody
+          ? this.getStringValue(data)
+          : "";
         const reqObjEntries = Object.entries(request.headers).map(([k, v]) => {
           if (typeof v === "string") return [k, [v]];
           return [k, v];

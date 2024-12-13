@@ -4,3 +4,4 @@ export {
   setAttributes,
   Config,
 } from "./apitoolkit";
+export { observeAxios, observeAxiosGlobal, AxiosConfig } from "./axios";

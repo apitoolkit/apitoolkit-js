@@ -108,7 +108,7 @@ export const onResponseError =
     }
   };
 
-type AxiosConfig = {
+export type AxiosConfig = {
   axiosInstance: AxiosStatic;
   urlWildcard: string | undefined;
   redactHeaders: string[];
