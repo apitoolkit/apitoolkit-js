@@ -14,10 +14,9 @@
     "dist/configure.js"
   ],
   "exports": {
-    ".": "./build/index.js",
-    "./types": "./build/src/types.js",
-    "./apitoolkit_provider": "./build/providers/apitoolkit_provider.js",
-    "./apitoolkit_middleware": "./build/src/middleware/apitoolkit_middleware.js"
+    ".": "./dist/index.js",
+    "./apitoolkit_provider": "./dist/providers/apitoolkit_provider.js",
+    "./apitoolkit_middleware": "./dist/src/middleware/apitoolkit_middleware.js"
   },
   "scripts": {
     "pretest": "npm run lint",
@@ -30,12 +29,6 @@
     "build": "npm run compile",
     "prepublishOnly": "npm run build",
     "version": "git add -A ."
-  },
-  "author": "",
-  "keywords": [],
-  "license": "ISC",
-  "peerDependencies": {
-    "@adonisjs/core": "^6.9.0"
   },
   "devDependencies": {
     "@adonisjs/core": "^6.9.0",
@@ -70,6 +63,12 @@
     "@apitoolkit/common": "workspace:*",
     "uuid": "^9.0.1"
   },
+  "peerDependencies": {
+    "@adonisjs/core": "^6.9.0"
+  },
+  "author": "Yussif Mohammed",
+  "license": "MIT",
+  "keywords": [],
   "eslintConfig": {
     "extends": "@adonisjs/eslint-config/package"
   },
