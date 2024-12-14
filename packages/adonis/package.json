@@ -19,15 +19,15 @@
     "./apitoolkit_middleware": "./dist/src/middleware/apitoolkit_middleware.js"
   },
   "scripts": {
-    "pretest": "npm run lint",
+    "pretest": "pnpm run lint",
     "lint": "eslint . --ext=.ts",
     "test": "node --import=./tsnode.esm.js --enable-source-maps bin/test.ts",
-    "clean": "del-cli build",
-    "compile": "npm run clean && tsc && npm run copy:files",
-    "copy:files": "copyfiles \"stubs/**/*.stub\" build",
-    "copy:instructions_md": "copyfiles \"instructions.md\" build",
-    "build": "npm run compile",
-    "prepublishOnly": "npm run build",
+    "clean": "del-cli dist",
+    "compile": "pnpm run clean && tsc && pnpm run copy:files",
+    "copy:files": "copyfiles \"stubs/**/*.stub\" dist",
+    "copy:instructions_md": "copyfiles \"instructions.md\" dist",
+    "build": "pnpm run compile",
+    "prepublishOnly": "pnpm run build",
     "version": "git add -A ."
   },
   "devDependencies": {
