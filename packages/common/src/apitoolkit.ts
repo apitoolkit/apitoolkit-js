@@ -27,6 +27,7 @@ export function setAttributes(
   urlPath: string,
   reqBody: string,
   respBody: string,
+  errors: ATError[],
   config: Config,
   sdkType: `JsExpress` | `JsFastify` | `JsAdonis` | "JsAxiosOutgoing",
   parentId: string | undefined
@@ -49,9 +50,7 @@ export function setAttributes(
       "http.response.body": Buffer.from(
         redactFields(respBody, config.redactRequestBody || [])
       ).toString("base64"),
-      "apitoolkit.errors": JSON.stringify(
-        asyncLocalStorage.getStore()?.get("AT_errors") || []
-      ),
+      "apitoolkit.errors": JSON.stringify(errors),
       "apitoolkit.service_version": config.serviceVersion || "",
       "apitoolkit.tags": config.tags || [],
     });
@@ -129,24 +128,34 @@ export type Config = {
 
 export const asyncLocalStorage = new AsyncLocalStorage<Map<string, any>>();
 
-export function ReportError(error: any) {
-  if (asyncLocalStorage.getStore() == null) {
-    console.log(
-      "APIToolkit: ReportError used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.ReportError instead, if you're not in a web context."
-    );
-    return Promise.reject(error);
-  }
+export function ReportError(error: any, reqContext?: any) {
+  const outsideContextMsg =
+    "APIToolkit: ReportError used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.ReportError instead, if you're not in a web context.";
 
   const resp = normaliseError(error);
   if (!resp) {
     return;
   }
-
   const [nError, _internalFrames] = resp;
   const atError = buildError(nError);
-  const errList: ATError[] = asyncLocalStorage.getStore()!.get("AT_errors");
-  errList.push(atError);
-  asyncLocalStorage.getStore()!.set("AT_errors", errList);
+  if (reqContext) {
+    const ctx = reqContext.get();
+    if (!ctx || !ctx.apitoolkitData) {
+      console.warn(outsideContextMsg);
+      return;
+    }
+    const errList = ctx.apitoolkitData?.errors || [];
+    errList.push(atError);
+    ctx.apitoolkitData.errors = errList;
+  } else {
+    if (asyncLocalStorage.getStore() == null) {
+      console.warn(outsideContextMsg);
+      return;
+    }
+    const errList: ATError[] = asyncLocalStorage.getStore()!.get("AT_errors");
+    errList.push(atError);
+    asyncLocalStorage.getStore()!.set("AT_errors", errList);
+  }
 }
 
 // Recursively unwraps an error and returns the original cause.

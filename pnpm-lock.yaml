@@ -124,6 +124,9 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.10.2
+      del-cli:
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ^5.0.0
         version: 5.7.2
@@ -155,6 +158,9 @@ importers:
       '@types/multer':
         specifier: ^1.4.12
         version: 1.4.12
+      del-cli:
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ^5.0.0
         version: 5.7.2
@@ -180,6 +186,9 @@ importers:
         specifier: ^11.0.3
         version: 11.0.3
     devDependencies:
+      del-cli:
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ^5.0.0
         version: 5.7.2

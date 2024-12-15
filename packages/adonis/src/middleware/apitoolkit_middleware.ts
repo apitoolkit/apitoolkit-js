@@ -11,7 +11,6 @@ import {
   Config,
   AxiosConfig,
   setAttributes,
-  asyncLocalStorage,
 } from '@apitoolkit/common'
 
 const defaultConfig = {
@@ -26,11 +25,12 @@ export default class APIToolkitMiddleware {
       console.log('apitoolkit:  initialized successfully')
     }
     if (configs.monitorAxios) {
-      observeAxiosGlobal(configs.monitorAxios, configs)
+      observeAxiosGlobal(configs.monitorAxios, configs, HttpContext)
     }
     this.#config = configs
   }
   observeAxios(axiosConfig: AxiosConfig) {
+    axiosConfig.requestContext = HttpContext
     return observeAxios(axiosConfig)
   }
 
@@ -43,51 +43,55 @@ export default class APIToolkitMiddleware {
         this.#config = conf
       }
       async handle({ request, response }: HttpContext, next: NextFn) {
-        asyncLocalStorage.run(new Map(), async () => {
-          const store = asyncLocalStorage.getStore()
-          const msgId = uuidv4()
-          const span = trace
-            .getTracer(this.#config.serviceName || '')
-            .startSpan('apitoolkit-http-span')
+        const msgId = uuidv4()
+        const span = trace
+          .getTracer(this.#config.serviceName || '')
+          .startSpan('apitoolkit-http-span')
 
-          if (store) {
-            store.set('AT_msg_id', msgId)
-            store.set('AT_errors', [])
+        const ctx = HttpContext.get()
+        if (ctx) {
+          ctx.apitoolkitData = {
+            msgId,
+            errors: [],
+            config: this.#config,
           }
-          if (this.#config?.debug) {
-            console.log('APIToolkit: adonisjs middleware called')
-          }
-          const reqBody = this.getSafeBody(request.body())
-          let serverError = null
-          try {
-            await next()
-          } catch (error) {
-            serverError = error
-            ReportError(serverError)
-            throw error
-          } finally {
-            const respBody = this.getSafeBody(response.getBody())
-            const statusCode = serverError !== null ? 500 : response.response.statusCode
-            setAttributes(
-              span,
-              request.hostname() || '',
-              statusCode,
-              request.qs(),
-              request.params(),
-              request.headers(),
-              response.getHeaders(),
-              request.method(),
-              request.url(true),
-              msgId,
-              request.ctx?.route?.pattern || '',
-              reqBody,
-              respBody,
-              this.#config,
-              'JsAdonis',
-              undefined
-            )
-          }
-        })
+        }
+        if (this.#config?.debug) {
+          console.log('APIToolkit: adonisjs middleware called')
+        }
+        const reqBody = this.#config.captureRequestBody ? this.getSafeBody(request.body()) : ''
+        let serverError = null
+        try {
+          await next()
+        } catch (error) {
+          serverError = error
+          ReportError(serverError)
+          throw error
+        } finally {
+          const respBody = this.#config.captureResponseBody
+            ? this.getSafeBody(response.getBody())
+            : ''
+          const statusCode = serverError !== null ? 500 : response.response.statusCode
+          setAttributes(
+            span,
+            request.hostname() || '',
+            statusCode,
+            request.qs(),
+            request.params(),
+            request.headers(),
+            response.getHeaders(),
+            request.method(),
+            request.url(true),
+            msgId,
+            request.ctx?.route?.pattern || '',
+            reqBody,
+            respBody,
+            ctx?.apitoolkitData.errors || [],
+            this.#config,
+            'JsAdonis',
+            undefined
+          )
+        }
       }
       getSafeBody(rqb: any): string {
         let result = ''

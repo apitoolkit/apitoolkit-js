@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --build"
+    "build": "del-cli dist & tsc"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
@@ -19,7 +19,8 @@
   "devDependencies": {
     "@types/jsonpath": "^0.2.4",
     "@types/node": "^22.10.2",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "del-cli": "^5.1.0"
   },
   "license": "MIT"
 }

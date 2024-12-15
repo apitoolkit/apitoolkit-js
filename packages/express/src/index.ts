@@ -83,6 +83,7 @@ export class APIToolkit {
             url_path,
             reqBody,
             respBody,
+            asyncLocalStorage.getStore()?.get("AT_errors") || [],
             this.#config,
             "JsExpress",
             undefined

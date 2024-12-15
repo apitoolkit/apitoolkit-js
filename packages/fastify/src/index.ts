@@ -157,6 +157,7 @@ class APIToolkit {
           request.routeOptions.url || "/",
           reqBody,
           resBody,
+          asyncLocalStorage.getStore()?.get("AT_errors") || [],
           this.#config,
           "JsFastify",
           undefined

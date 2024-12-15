@@ -31,6 +31,7 @@ export const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 function processResponse(
   response: AxiosResponse | AxiosError,
   config: Config,
+  reqContext: any | undefined,
   urlWildcard: string | undefined
 ) {
   let req: any = response.config;
@@ -60,10 +61,18 @@ function processResponse(
   const msg_id = uuidv4();
   const queryParams = Object.fromEntries(queryObjEntries);
   const host = getHostFromUrl(req.baseURL || req.url || "");
-  const store = asyncLocalStorage.getStore();
-  let parent_id;
-  if (store) {
-    parent_id = store.get("AT_msg_id");
+
+  let parentId;
+  if (reqContext) {
+    const ctx = reqContext.get();
+    if (ctx && ctx.apitoolkitData) {
+      parentId = ctx.apitoolkitData.msgId;
+    }
+  } else {
+    const store = asyncLocalStorage.getStore();
+    if (store) {
+      parentId = store.get("AT_msg_id");
+    }
   }
   const urlPath = urlWildcard ? urlWildcard : path;
   setAttributes(
@@ -80,17 +89,22 @@ function processResponse(
     urlPath,
     reqBody,
     respBody,
+    [],
     config,
     "JsAxiosOutgoing",
-    parent_id
+    parentId
   );
 }
 
 export const onResponse =
-  (config: Config, urlWildcard: string | undefined) =>
+  (
+    config: Config,
+    reqContext: any | undefined,
+    urlWildcard: string | undefined
+  ) =>
   (response: AxiosResponse): AxiosResponse => {
     try {
-      processResponse(response, config, urlWildcard);
+      processResponse(response, config, reqContext, urlWildcard);
       return response;
     } catch (_error) {
       return response;
@@ -98,10 +112,14 @@ export const onResponse =
   };
 
 export const onResponseError =
-  (config: Config, urlWildcard: string | undefined) =>
+  (
+    config: Config,
+    reqContext: any | undefined,
+    urlWildcard: string | undefined
+  ) =>
   (error: AxiosError): Promise<AxiosError> => {
     try {
-      processResponse(error, config, urlWildcard);
+      processResponse(error, config, reqContext, urlWildcard);
       return Promise.reject(error);
     } catch (_error) {
       return Promise.reject(error);
@@ -114,6 +132,7 @@ export type AxiosConfig = {
   redactHeaders: string[];
   redactRequestBody: string[];
   redactResponseBody: string[];
+  requestContext?: any;
 };
 export function observeAxios({
   axiosInstance,
@@ -121,6 +140,7 @@ export function observeAxios({
   redactHeaders,
   redactRequestBody,
   redactResponseBody,
+  requestContext,
 }: AxiosConfig): AxiosInstance {
   const newAxios = axiosInstance.create();
   newAxios.interceptors.request.use(onRequest, onRequestError);
@@ -130,20 +150,21 @@ export function observeAxios({
     redactResponseBody: redactResponseBody,
   };
   newAxios.interceptors.response.use(
-    onResponse(config, urlWildcard),
-    onResponseError(config, urlWildcard)
+    onResponse(config, requestContext, urlWildcard),
+    onResponseError(config, requestContext, urlWildcard)
   );
   return newAxios;
 }
 
 export function observeAxiosGlobal(
   axiosInstance: AxiosInstance,
-  config: Config
+  config: Config,
+  reqContext?: any
 ) {
   axiosInstance.interceptors.request.use(onRequest, onRequestError);
   axiosInstance.interceptors.response.use(
-    onResponse(config, undefined),
-    onResponseError(config, undefined)
+    onResponse(config, reqContext, undefined),
+    onResponseError(config, reqContext, undefined)
   );
 }
 

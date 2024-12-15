@@ -7,7 +7,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "del-cli dist & tsc --build"
   },
   "dependencies": {
     "@apitoolkit/common": "workspace:*",
@@ -21,6 +21,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "del-cli": "^5.1.0",
     "typescript": "^5.0.0"
   }
 }
