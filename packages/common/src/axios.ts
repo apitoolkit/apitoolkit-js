@@ -128,10 +128,10 @@ export const onResponseError =
 
 export type AxiosConfig = {
   axiosInstance: AxiosStatic;
-  urlWildcard: string | undefined;
-  redactHeaders: string[];
-  redactRequestBody: string[];
-  redactResponseBody: string[];
+  urlWildcard?: string;
+  redactHeaders?: string[];
+  redactRequestBody?: string[];
+  redactResponseBody?: string[];
   requestContext?: any;
 };
 export function observeAxios({
