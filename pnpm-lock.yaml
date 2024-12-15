@@ -35,9 +35,6 @@ importers:
       '@poppinss/utils':
         specifier: ^6.7.3
         version: 6.8.3
-      apitoolkit-js:
-        specifier: ^3.3.2
-        version: 3.3.3
       async_hooks:
         specifier: ^1.0.0
         version: 1.0.0
@@ -1699,9 +1696,6 @@ packages:
   api-schema-builder@2.0.11:
     resolution: {integrity: sha512-85zbwf8MtPWodhfnmQRW5YD/fuGR12FP+8TbcYai5wbRnoUmPYLftLSbp7NB6zQMPb61Gjz+ApPUSyTdcCos7g==}
     engines: {node: '>=8'}
-
-  apitoolkit-js@3.3.3:
-    resolution: {integrity: sha512-ZXN9Q8DlQMECnAWXeWk1vr0LtFUDOSY79BAIgnL3i+H9AKrflw8wMVBN086XUFiY3wo/1qE/islYZQzAQhAhqQ==}
 
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
@@ -7276,13 +7270,6 @@ snapshots:
       swagger-parser: 10.0.3(openapi-types@1.3.4)
     transitivePeerDependencies:
       - openapi-types
-
-  apitoolkit-js@3.3.3:
-    dependencies:
-      axios: 1.7.9
-      jsonpath: 1.1.1
-    transitivePeerDependencies:
-      - debug
 
   arg@4.1.3: {}
 
