@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "del-cli dist & tsc"
+    "build": "tsc"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
