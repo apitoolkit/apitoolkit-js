@@ -7,7 +7,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "del-cli dist & del-cli tsconfig.tsbuildinfo & tsc --build"
+    "build": "del-cli dist & del-cli tsconfig.tsbuildinfo & tsc --build",
+    "prepublishOnly": "pnpm run build"
+
   },
   "dependencies": {
     "@apitoolkit/common": "workspace:*",

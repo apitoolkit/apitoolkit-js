@@ -8,7 +8,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "del-cli dist & del-cli tsconfig.tsbuildinfo & tsc"
+    "build": "del-cli dist & del-cli tsconfig.tsbuildinfo & tsc",
+    "prepublishOnly": "pnpm run build"
+
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
