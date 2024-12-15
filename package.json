@@ -3,9 +3,6 @@
   "version": "3.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "build": "pnpm exec tsc --build"
-  },
   "workspaces": [
     "packages/*"
   ],
