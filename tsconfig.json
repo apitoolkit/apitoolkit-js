@@ -8,6 +8,7 @@
     "target": "ESNext",
     "moduleResolution": "node"
   },
+  "prepublishOnly": "pnpm run build --workspace",
   "references": [
     { "path": "./packages/common" },
     { "path": "./packages/express" },

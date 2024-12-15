@@ -1,6 +1,6 @@
 {
   "name": "@apitoolkit/common",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,9 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "del-cli dist & tsc",
-    "prepublishOnly": "pnpm run build"
-
+    "build": "del-cli dist & tsc"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
