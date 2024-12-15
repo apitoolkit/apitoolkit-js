@@ -1,13 +1,15 @@
 {
   "name": "apitoolkit-fastify",
-  "version": "3.5.1",
+  "version": "3.5.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "del-cli dist &  del-cli tsconfig.tsbuildinfo & ts"
+    "build": "del-cli dist & tsc",
+    "prepublishOnly": "pnpm run build"
+
   },
   "dependencies": {
     "@apitoolkit/common": "workspace:*",

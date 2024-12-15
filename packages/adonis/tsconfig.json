@@ -12,5 +12,6 @@
     "moduleResolution": "NodeNext"
   },
   "references": [{ "path": "../common" }],
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.json",
+  "exclude": ["dist", "node_modules"]
 }

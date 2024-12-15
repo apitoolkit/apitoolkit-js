@@ -4,5 +4,6 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "references": [{ "path": "../common" }]
+  "references": [{ "path": "../common" }],
+  "exclude": ["dist", "node_modules"]
 }
