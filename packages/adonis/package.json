@@ -22,7 +22,7 @@
     "pretest": "pnpm run lint",
     "lint": "eslint . --ext=.ts",
     "test": "node --import=./tsnode.esm.js --enable-source-maps bin/test.ts",
-    "clean": "del-cli dist",
+    "clean": "del-cli dist & del-cli tsconfig.tsbuildinfo",
     "compile": "pnpm run clean && tsc && pnpm run copy:files",
     "copy:files": "copyfiles \"stubs/**/*.stub\" dist",
     "copy:instructions_md": "copyfiles \"instructions.md\" dist",

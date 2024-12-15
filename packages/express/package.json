@@ -7,7 +7,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "del-cli dist & tsc --build"
+    "build": "del-cli dist & del-cli tsconfig.tsbuildinfo & tsc --build"
   },
   "dependencies": {
     "@apitoolkit/common": "workspace:*",
