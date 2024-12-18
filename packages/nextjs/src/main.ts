@@ -10,7 +10,7 @@ export const asyncLocalStorage = new AsyncLocalStorage<Map<string, any>>();
 
 type AppRouterResponse = Promise<Response> | Response;
 
-export function APItoolkitAppRouterWrapper(
+export function withAPItoolkitAppRouter(
   handler:
     | ((request: Request, params?: unknown) => AppRouterResponse)
     | ((request: NextRequest, params?: unknown) => AppRouterResponse),
@@ -65,7 +65,7 @@ export function APItoolkitAppRouterWrapper(
   };
 }
 
-export function APItoolkitPagesRouterWrapper(
+export function withAPItoolkitPagesRouter(
   handler: NextApiHandler,
   config?: Config
 ) {

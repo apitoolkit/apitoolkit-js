@@ -1,4 +1,4 @@
-import {
+import axios, {
   AxiosError,
   AxiosInstance,
   AxiosResponse,
@@ -146,7 +146,6 @@ export const onResponseError =
   };
 
 export type AxiosConfig = {
-  axiosInstance: AxiosStatic;
   urlWildcard?: string;
   redactHeaders?: string[];
   redactRequestBody?: string[];
@@ -155,7 +154,6 @@ export type AxiosConfig = {
   nextAsyncLocalStorage?: any;
 };
 export function observeAxios({
-  axiosInstance,
   urlWildcard,
   redactHeaders,
   redactRequestBody,
@@ -163,7 +161,7 @@ export function observeAxios({
   requestContext,
   nextAsyncLocalStorage,
 }: AxiosConfig): AxiosInstance {
-  const newAxios = axiosInstance.create();
+  const newAxios = axios.create();
   newAxios.interceptors.request.use(onRequest, onRequestError);
   const config: Config = {
     redactHeaders: redactHeaders,

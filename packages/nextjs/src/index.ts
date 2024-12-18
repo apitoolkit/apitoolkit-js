@@ -9,7 +9,4 @@ export function reportError(error: Error) {
   return ReportError(error, undefined, asyncLocalStorage);
 }
 
-export {
-  APItoolkitAppRouterWrapper,
-  APItoolkitPagesRouterWrapper,
-} from "./main";
+export { withAPItoolkitAppRouter, withAPItoolkitPagesRouter } from "./main";
