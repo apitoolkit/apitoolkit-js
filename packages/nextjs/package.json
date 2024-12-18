@@ -1,6 +1,6 @@
 {
   "name": "apitoolkit-next",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,11 +12,6 @@
   "dependencies": {
     "@apitoolkit/common": "workspace:*",
     "uuid": "^11.0.3"
-  },
-  "peerDependencies": {
-    "next": "^14.0.0",
-    "axios": "^1.7.9",
-    "@opentelemetry/api": "^1.9.0"
   },
   "keywords": [],
   "author": "",
