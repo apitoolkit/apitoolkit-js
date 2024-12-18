@@ -29,7 +29,12 @@ export function setAttributes(
   respBody: string,
   errors: ATError[],
   config: Config,
-  sdkType: `JsExpress` | `JsFastify` | `JsAdonis` | "JsAxiosOutgoing",
+  sdkType:
+    | `JsExpress`
+    | `JsFastify`
+    | `JsAdonis`
+    | "JsAxiosOutgoing"
+    | "JsNext",
   parentId: string | undefined
 ) {
   try {

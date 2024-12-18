@@ -12,7 +12,8 @@
     { "path": "./packages/common" },
     { "path": "./packages/express" },
     {"path": "./packages/fastify"},
-    {"path": "./packages/adonis"}
+    {"path": "./packages/adonis"},
+    {"path": "./packages/nextjs"}
   ],
   "exclude": [
     "node_modules",
