@@ -84,7 +84,7 @@ export function APItoolkitPagesRouterWrapper(
 ) {
   return async (request: NextApiRequest, response: NextApiResponse) => {
     const span = trace
-      .getTracer(config?.serviceName || "")
+      .getTracer(config?.serviceName || "h")
       .startSpan("apitoolkit-http-span");
 
     return asyncLocalStorage.run(new Map(), async () => {
