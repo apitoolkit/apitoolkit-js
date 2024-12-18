@@ -2,7 +2,6 @@ import axios, {
   AxiosError,
   AxiosInstance,
   AxiosResponse,
-  AxiosStatic,
   InternalAxiosRequestConfig,
 } from "axios";
 import { v4 as uuidv4 } from "uuid";
