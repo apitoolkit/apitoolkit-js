@@ -1,13 +1,26 @@
-import { asyncLocalStorage, Config, setAttributes } from "@apitoolkit/common";
+import { AxiosConfig, Config, setAttributes } from "@apitoolkit/common";
 
 import { trace } from "@opentelemetry/api";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
-export { observeAxios, ReportError as reportError } from "@apitoolkit/common";
+import { observeAxios as oa, ReportError } from "@apitoolkit/common";
+
+// using the asyncLocalStorage from @apitoolkit/common doesn't work in nextjs
+// Using the nextjs AsyncLocalStorage instead
+const asyncLocalStorage = new AsyncLocalStorage<Map<string, any>>();
 
 type AppRouterResponse = Promise<Response> | Response;
+
+export function observeAxios(config: AxiosConfig) {
+  config.nextAsyncLocalStorage = asyncLocalStorage;
+  return oa(config);
+}
+
+export function reportError(error: Error) {
+  return ReportError(error, asyncLocalStorage);
+}
 
 export function APItoolkitAppRouterWrapper(
   handler:

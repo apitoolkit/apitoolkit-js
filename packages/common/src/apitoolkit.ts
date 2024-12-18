@@ -133,7 +133,11 @@ export type Config = {
 
 export const asyncLocalStorage = new AsyncLocalStorage<Map<string, any>>();
 
-export function ReportError(error: any, reqContext?: any) {
+export function ReportError(
+  error: any,
+  reqContext?: any,
+  nextAsyncLocalStorage?: AsyncLocalStorage<Map<string, any>>
+) {
   const outsideContextMsg =
     "APIToolkit: ReportError used outside of the APIToolkit middleware's scope. Use the APIToolkitClient.ReportError instead, if you're not in a web context.";
 
@@ -153,13 +157,17 @@ export function ReportError(error: any, reqContext?: any) {
     errList.push(atError);
     ctx.apitoolkitData.errors = errList;
   } else {
-    if (asyncLocalStorage.getStore() == null) {
+    let as = asyncLocalStorage;
+    if (nextAsyncLocalStorage) {
+      as = nextAsyncLocalStorage;
+    }
+    if (as.getStore() == null) {
       console.warn(outsideContextMsg);
       return;
     }
-    const errList: ATError[] = asyncLocalStorage.getStore()!.get("AT_errors");
+    const errList: ATError[] = as.getStore()!.get("AT_errors");
     errList.push(atError);
-    asyncLocalStorage.getStore()!.set("AT_errors", errList);
+    as.getStore()!.set("AT_errors", errList);
   }
 }
 
