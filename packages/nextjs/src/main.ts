@@ -16,11 +16,10 @@ export function APItoolkitAppRouterWrapper(
     | ((request: NextRequest, params?: unknown) => AppRouterResponse),
   config?: Config
 ) {
-  const span = trace
-    .getTracer(config?.serviceName || "")
-    .startSpan("apitoolkit-http-span");
-
   return async (request: Request | NextRequest, params?: unknown) => {
+    const span = trace
+      .getTracer(config?.serviceName || "")
+      .startSpan("apitoolkit-http-span");
     return asyncLocalStorage.run(new Map(), async () => {
       const store = asyncLocalStorage.getStore();
       const msg_id = uuidv4();
@@ -72,9 +71,8 @@ export function APItoolkitPagesRouterWrapper(
 ) {
   return async (request: NextApiRequest, response: NextApiResponse) => {
     const span = trace
-      .getTracer(config?.serviceName || "h")
+      .getTracer(config?.serviceName || "")
       .startSpan("apitoolkit-http-span");
-
     return asyncLocalStorage.run(new Map(), async () => {
       const store = asyncLocalStorage.getStore();
       const msg_id = uuidv4();

@@ -6,7 +6,7 @@ export function observeAxios(config: AxiosConfig) {
 }
 
 export function reportError(error: Error) {
-  return ReportError(error, asyncLocalStorage);
+  return ReportError(error, undefined, asyncLocalStorage);
 }
 
 export {
