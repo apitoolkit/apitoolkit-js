@@ -1,4 +1,4 @@
-import {
+import axios, {
   AxiosError,
   AxiosInstance,
   AxiosResponse,
@@ -32,7 +32,6 @@ function processResponse(
   response: AxiosResponse | AxiosError,
   config: Config,
   reqContext: any | undefined,
-  nextAsyncLocalStorage: any | undefined,
   urlWildcard: string | undefined
 ) {
   let req: any = response.config;
@@ -70,11 +69,7 @@ function processResponse(
       parentId = ctx.apitoolkitData.msgId;
     }
   } else {
-    let as = asyncLocalStorage;
-    if (nextAsyncLocalStorage) {
-      as = nextAsyncLocalStorage;
-    }
-    const store = as.getStore();
+    const store = asyncLocalStorage.getStore();
     if (store) {
       parentId = store.get("AT_msg_id");
     }
@@ -105,18 +100,11 @@ export const onResponse =
   (
     config: Config,
     reqContext: any | undefined,
-    nextAsyncLocalStorage: any | undefined,
     urlWildcard: string | undefined
   ) =>
   (response: AxiosResponse): AxiosResponse => {
     try {
-      processResponse(
-        response,
-        config,
-        reqContext,
-        nextAsyncLocalStorage,
-        urlWildcard
-      );
+      processResponse(response, config, reqContext, urlWildcard);
       return response;
     } catch (_error) {
       return response;
@@ -127,18 +115,11 @@ export const onResponseError =
   (
     config: Config,
     reqContext: any | undefined,
-    nextAsyncLocalStorage: any | undefined,
     urlWildcard: string | undefined
   ) =>
   (error: AxiosError): Promise<AxiosError> => {
     try {
-      processResponse(
-        error,
-        config,
-        reqContext,
-        nextAsyncLocalStorage,
-        urlWildcard
-      );
+      processResponse(error, config, reqContext, urlWildcard);
       return Promise.reject(error);
     } catch (_error) {
       return Promise.reject(error);
@@ -146,24 +127,20 @@ export const onResponseError =
   };
 
 export type AxiosConfig = {
-  axiosInstance: AxiosStatic;
   urlWildcard?: string;
   redactHeaders?: string[];
   redactRequestBody?: string[];
   redactResponseBody?: string[];
   requestContext?: any;
-  nextAsyncLocalStorage?: any;
 };
 export function observeAxios({
-  axiosInstance,
   urlWildcard,
   redactHeaders,
   redactRequestBody,
   redactResponseBody,
   requestContext,
-  nextAsyncLocalStorage,
 }: AxiosConfig): AxiosInstance {
-  const newAxios = axiosInstance.create();
+  const newAxios = axios.create();
   newAxios.interceptors.request.use(onRequest, onRequestError);
   const config: Config = {
     redactHeaders: redactHeaders,
@@ -171,22 +148,17 @@ export function observeAxios({
     redactResponseBody: redactResponseBody,
   };
   newAxios.interceptors.response.use(
-    onResponse(config, requestContext, nextAsyncLocalStorage, urlWildcard),
-    onResponseError(config, requestContext, nextAsyncLocalStorage, urlWildcard)
+    onResponse(config, requestContext, urlWildcard),
+    onResponseError(config, requestContext, urlWildcard)
   );
   return newAxios;
 }
 
-export function observeAxiosGlobal(
-  axiosInstance: AxiosInstance,
-  config: Config,
-  reqContext?: any,
-  nextAsyncLocalStorage?: any
-) {
-  axiosInstance.interceptors.request.use(onRequest, onRequestError);
-  axiosInstance.interceptors.response.use(
-    onResponse(config, reqContext, nextAsyncLocalStorage, undefined),
-    onResponseError(config, reqContext, nextAsyncLocalStorage, undefined)
+export function observeAxiosGlobal(config: Config, reqContext?: any) {
+  axios.interceptors.request.use(onRequest, onRequestError);
+  axios.interceptors.response.use(
+    onResponse(config, reqContext, undefined),
+    onResponseError(config, reqContext, undefined)
   );
 }
 
