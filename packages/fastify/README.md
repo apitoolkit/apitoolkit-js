@@ -77,4 +77,4 @@ An object with the following optional fields can be passed to the middleware to 
 
 > [!IMPORTANT]
 >
-> To learn more configuration options (redacting fields, error reporting, outgoing requests, etc.) and complete integration guide, please read this [SDK documentation](https://apitoolkit.io/docs/sdks/nodejs/fastifyjs/utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme).
+> To learn more configuration options (redacting fields, error reporting, outgoing requests, etc.) and complete integration guide, please read this [SDK documentation](https://apitoolkit.io/docs/sdks/nodejs/fastifyjs?utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme).
