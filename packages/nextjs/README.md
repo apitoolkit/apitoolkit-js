@@ -45,7 +45,7 @@ To monitor http requests, wrap your routes with the `withAPItoolkitAppRouter` fu
 #### Example App Router
 
 ```js
-import { APItoolkitAppRouterWrapper} from "apitoolkit-next";
+import { withAPItoolkitAppRouter } from "apitoolkit-next";
 import { NextRequest, NextResponse } from "next/server";
 async function handleRequest(req: NextRequest) {
   return NextResponse.json({ message: "hello world" });
@@ -64,7 +64,7 @@ export const GET = withAPItoolkitAppRouter(handleRequest, config);
 
 ```js
 import type { NextApiRequest, NextApiResponse } from "next";
-import { APItoolkitPagesRouterWrapper} from "apitoolkit-next";
+import { withAPItoolkitPagesRouter } from "apitoolkit-next";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).json({ message: "Hello from Next.js!" });
@@ -76,7 +76,7 @@ const config = {
   serviceName: "my-service",
 }
 
-export default APItoolkitPagesRouterWrapper(handler, config);
+export default withAPItoolkitPagesRouter(handler, config);
 ```
 
 #### Quick overview of the configuration parameters
