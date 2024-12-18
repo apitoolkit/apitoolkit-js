@@ -3,6 +3,9 @@
   "version": "3.0.0",
   "description": "",
   "main": "index.js",
+  "scripts": {
+    "publish": "pnpm --filter='./packages/*' publish --access public"
+  },
   "workspaces": [
     "packages/*"
   ],
