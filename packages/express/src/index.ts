@@ -16,7 +16,7 @@ export class APIToolkit {
   constructor(config: Config) {
     this.#config = config;
     if (this.#config.monitorAxios) {
-      observeAxiosGlobal(this.#config.monitorAxios, this.#config);
+      observeAxiosGlobal(this.#config);
     }
     this.middleware = this.middleware.bind(this);
     this.errorMiddleware = this.errorMiddleware.bind(this);

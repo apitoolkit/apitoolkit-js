@@ -78,7 +78,7 @@ class APIToolkit {
 
   public initializeHooks() {
     if (this.#config.monitorAxios) {
-      observeAxiosGlobal(this.#config.monitorAxios, this.#config);
+      observeAxiosGlobal(this.#config);
     }
     this.#config.fastify.addHook("preHandler", (request, _reply, done) => {
       if (this.#config.debug) {

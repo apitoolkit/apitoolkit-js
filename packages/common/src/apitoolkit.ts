@@ -128,7 +128,7 @@ export type Config = {
   captureResponseBody?: boolean;
   tags?: string[];
   serviceVersion?: string;
-  monitorAxios?: AxiosInstance;
+  monitorAxios?: boolean;
 };
 
 export const asyncLocalStorage = new AsyncLocalStorage<Map<string, any>>();
