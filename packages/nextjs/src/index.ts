@@ -29,32 +29,38 @@ export function APItoolkitAppRouterWrapper(
       }
       const reqClon = request.clone() as NextRequest;
       const response = await handler(request as NextRequest, params);
-      const reqBody = config?.captureRequestBody ? await reqClon.text() : "";
-      const resClone = response.clone();
-      const respBody = config?.captureResponseBody ? await resClone.text() : "";
-      const url = new URL(request.url);
 
-      setAttributes(
-        span,
-        url.hostname,
-        response.status,
-        Object.fromEntries(url.searchParams.entries()),
-        params || {},
-        Object.fromEntries(request.headers.entries()),
-        Object.fromEntries(response.headers.entries()),
-        request.method,
-        url.pathname + url.search,
-        msg_id,
-        (request as NextRequest).nextUrl.pathname,
-        reqBody,
-        respBody,
-        asyncLocalStorage.getStore()?.get("AT_errors") || [],
-        config || {},
-        "JsNext",
-        undefined
-      );
+      try {
+        const reqBody = config?.captureRequestBody ? await reqClon.text() : "";
+        const resClone = response.clone();
+        const respBody = config?.captureResponseBody
+          ? await resClone.text()
+          : "";
+        const url = new URL(request.url);
 
-      return response;
+        setAttributes(
+          span,
+          url.hostname,
+          response.status,
+          Object.fromEntries(url.searchParams.entries()),
+          params || {},
+          Object.fromEntries(request.headers.entries()),
+          Object.fromEntries(response.headers.entries()),
+          request.method,
+          url.pathname + url.search,
+          msg_id,
+          (request as NextRequest).nextUrl.pathname,
+          reqBody,
+          respBody,
+          asyncLocalStorage.getStore()?.get("AT_errors") || [],
+          config || {},
+          "JsNext",
+          undefined
+        );
+      } catch (_error) {
+      } finally {
+        return response;
+      }
     });
   };
 }
@@ -85,44 +91,47 @@ export function APItoolkitPagesRouterWrapper(
       };
 
       const res = await handler(request, response);
-      const query = request.url?.split("?")[1] || "";
-      const queryParams = query
-        ? Object.fromEntries(new URLSearchParams(query))
-        : {};
+      try {
+        const query = request.url?.split("?")[1] || "";
+        const queryParams = query
+          ? Object.fromEntries(new URLSearchParams(query))
+          : {};
 
-      const pathParams: Record<string, string | string[]> = {};
-      Object.keys(request.query).forEach((key) => {
-        if (!(key in queryParams)) {
-          if (request.query[key]) {
-            pathParams[key] = request.query[key];
+        const pathParams: Record<string, string | string[]> = {};
+        Object.keys(request.query).forEach((key) => {
+          if (!(key in queryParams)) {
+            if (request.query[key]) {
+              pathParams[key] = request.query[key];
+            }
           }
-        }
-      });
-      responseBody =
-        typeof responseBody === "string"
-          ? responseBody
-          : safeJSon(responseBody);
-      setAttributes(
-        span,
-        request.headers.host || "",
-        response.statusCode,
-        queryParams,
-        pathParams,
-        request.headers,
-        response.getHeaders(),
-        request.method || "",
-        request.url || "",
-        msg_id,
-        request.url || "",
-        reqBody,
-        responseBody,
-        asyncLocalStorage.getStore()?.get("AT_errors") || [],
-        config || {},
-        "JsNext",
-        undefined
-      );
-
-      return res;
+        });
+        responseBody =
+          typeof responseBody === "string"
+            ? responseBody
+            : safeJSon(responseBody);
+        setAttributes(
+          span,
+          request.headers.host || "",
+          response.statusCode,
+          queryParams,
+          pathParams,
+          request.headers,
+          response.getHeaders(),
+          request.method || "",
+          request.url || "",
+          msg_id,
+          request.url || "",
+          reqBody,
+          responseBody,
+          asyncLocalStorage.getStore()?.get("AT_errors") || [],
+          config || {},
+          "JsNext",
+          undefined
+        );
+      } catch (error) {
+      } finally {
+        return res;
+      }
     });
   };
 }
