@@ -10,7 +10,6 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@apitoolkit/common": "workspace:*",
     "uuid": "^11.0.3"
   },
   "keywords": [],
