@@ -153,7 +153,11 @@ export function observeAxios({
   return newAxios;
 }
 
-export function observeAxiosGlobal(config: Config, reqContext?: any) {
+export function observeAxiosGlobal(
+  axios: AxiosInstance,
+  config: Config,
+  reqContext?: any
+) {
   axios.interceptors.request.use(onRequest, onRequestError);
   axios.interceptors.response.use(
     onResponse(config, reqContext, undefined),
