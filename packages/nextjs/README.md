@@ -1,8 +1,15 @@
-<p>
-<img src="https://apitoolkit.io/assets/img/logo-full.svg" alt="APIToolkit" width="250px" />
-</p>
+<div align="center">
+
+![APItoolkit's Logo](https://github.com/apitoolkit/.github/blob/main/images/logo-white.svg?raw=true#gh-dark-mode-only)
+![APItoolkit's Logo](https://github.com/apitoolkit/.github/blob/main/images/logo-black.svg?raw=true#gh-light-mode-only)
+
+## NextJs SDK
+
+[![APItoolkit SDK](https://img.shields.io/badge/APItoolkit-SDK-0068ff?logo=next)](https://github.com/topics/apitoolkit-sdk) [![](https://img.shields.io/npm/v/apitoolkit-next.svg?logo=npm)](https://npmjs.com/package/apitoolkit-next) [![](https://img.shields.io/npm/dw/apitoolkit-next)](https://npmjs.com/package/apitoolkit-next) [![Join Discord Server](https://img.shields.io/badge/Chat-Discord-7289da)](https://apitoolkit.io/discord?utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme) [![APItoolkit Docs](https://img.shields.io/badge/Read-Docs-0068ff)](https://apitoolkit.io/docs/sdks/nodejs/next?utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme)
 
 APIToolkit NextJs Middleware is a middleware that can be used to monitor HTTP requests. It is provides additional functionalities on top of the open telemetry instrumentation which creates a custom span for each request capturing details about the request including request and response bodies.
+
+</div>
 
 ### Installation
 
