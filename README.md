@@ -20,3 +20,25 @@ Explore in-depth and detailed documentation for each SDK here:
 - [Fastify](https://apitoolkit.io/docs/sdks/nodejs/fastify?utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme)
 - [NestJS](https://apitoolkit.io/docs/sdks/nodejs/nestjs?utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme)
 - [NextJS](https://apitoolkit.io/docs/sdks/nodejs/nextjs?utm_campaign=devrel&utm_medium=github&utm_source=sdks_readme)
+
+---
+## Contributing and Help
+
+To contribute to the development of this project or request help from the community and our team, kindly do any of the following:
+- Read our [Contributors Guide](https://github.com/apitoolkit/.github/blob/main/CONTRIBUTING.md).
+- Join our community [Discord Server](https://discord.gg/dEB6EjQnKB).
+- Create a [new issue](https://github.com/apitoolkit/apitoolkit-js/issues) in this repository.  
+- [Follow](https://x.com/APItoolkitHQ) us on X (twitter) for updates.  
+- Our official [LinkedIn](https://www.linkedin.com/company/apitoolkit) page.
+
+## License
+
+This repository is published under the [MIT](LICENSE) license.
+
+---
+
+<div align="center">
+    
+<a href="https://apitoolkit.io?utm_source=github-sdks" target="_blank" rel="noopener noreferrer"><img src="https://github.com/apitoolkit/.github/blob/main/images/icon.png?raw=true" width="40" /></a>
+
+</div>
